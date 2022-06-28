@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.zerobase.convpay.service.MoneyAdapterTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2022-06-28T11:41:58" hostname="JunYongui-MacBookPro-2.local" time="0.012">
+  <properties/>
+  <testcase name="money_use_success()" classname="com.zerobase.convpay.service.MoneyAdapterTest" time="0.011"/>
+  <testcase name="money_use_fail()" classname="com.zerobase.convpay.service.MoneyAdapterTest" time="0.0"/>
+  <system-out><![CDATA[MoneyAdapter.use : 1000000
+MoneyAdapter.use : 1000001
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
