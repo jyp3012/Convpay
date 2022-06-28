@@ -1,2 +1,1 @@
-MoneyAdapter.use : 1000000
-MoneyAdapter.use : 1000001
+MoneyAdapter.useCancel : 99

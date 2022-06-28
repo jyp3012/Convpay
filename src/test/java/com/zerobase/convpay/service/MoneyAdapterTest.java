@@ -1,5 +1,7 @@
 package com.zerobase.convpay.service;
 
+import com.zerobase.convpay.type.MoneyUseResult;
+import com.zerobase.convpay.type.MoneyuseCancelResult;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,6 +32,30 @@ class MoneyAdapterTest {
 
         //then
         assertEquals(moneyUseResult.USE_SUCCESS, moneyUseResult);
+    }
+
+    @Test
+    void money_use_cancel_success() {
+        //given
+        Integer payCancelAmount = 100;
+
+        //when
+        MoneyuseCancelResult moneyuseCancelResult = moneyAdapter.useCancel(payCancelAmount);
+
+        //then
+        assertEquals(MoneyuseCancelResult.MONEYUSE_CANCEL_SUCCESS, moneyuseCancelResult);
+      }
+
+    @Test
+    void money_use_cancel_fail() {
+        //given
+        Integer payCancelAmount = 99;
+
+        //when
+        MoneyuseCancelResult moneyuseCancelResult = moneyAdapter.useCancel(payCancelAmount);
+
+        //then
+        assertEquals(MoneyuseCancelResult.MONEYUSE_CANCEL_FAIL, moneyuseCancelResult);
     }
 
 }
