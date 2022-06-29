@@ -1,16 +1,26 @@
 package com.zerobase.convpay.service;
 
 import com.zerobase.convpay.dto.*;
-import com.zerobase.convpay.type.MoneyUseResult;
-import com.zerobase.convpay.type.MoneyuseCancelResult;
-import com.zerobase.convpay.type.PayCancelResult;
-import com.zerobase.convpay.type.PayResult;
+import com.zerobase.convpay.type.*;
 
 public class ConveniencePayService { // 편걸이
     private final MoneyAdapter moneyAdapter = new MoneyAdapter();
+    // 만약 아래 코드로 의존성을 주입 해준다면 밑에 있는 코드 전체를 고쳐야 한다.
+     private final CardAdapter cardAdapter = new CardAdapter();
 
     public PayResponse pay(PayRequest payRequest) {
-        MoneyUseResult moneyUseResult = moneyAdapter.use(payRequest.getPayAmount());
+        CarduseResult carduseResult;
+        MoneyUseResult moneyUseResult;
+
+        if(payRequest.getPayMathodType() == PayMathodType.CARD) {
+            cardAdapter.authorization();
+            cardAdapter.approval();
+            carduseResult = cardAdapter.capture(payRequest.getPayAmount());
+        }else {
+            moneyUseResult = moneyAdapter.use(payRequest.getPayAmount());
+        }
+
+
 
         // 실패와 성공 케이스를 if else 문으로 처리 하는 것은 삼가하고
         // fail fast
@@ -25,7 +35,7 @@ public class ConveniencePayService { // 편걸이
 
         // Success Case(Only one)
 
-        if (moneyUseResult == MoneyUseResult.USE_FAIL) {
+        if (moneyUseResult == MoneyUseResult.USE_FAIL || carduseResult == CarduseResult.USE_FAIL) {
             return new PayResponse(PayResult.FAIL, 0);
         }
 
