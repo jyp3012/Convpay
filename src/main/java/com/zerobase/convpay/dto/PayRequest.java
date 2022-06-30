@@ -12,7 +12,7 @@ public class PayRequest {
     //결제 금액
     Integer payAmount;
 
-    public PayMethodType getPayMathodType() {
+    public PayMethodType getPayMethodType() {
         return payMethodType;
     }
 

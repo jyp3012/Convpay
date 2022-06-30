@@ -3,23 +3,34 @@ package com.zerobase.convpay.service;
 import com.zerobase.convpay.dto.*;
 import com.zerobase.convpay.type.*;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 public class ConveniencePayService { // 편걸이
-    private final MoneyAdapter moneyAdapter = new MoneyAdapter();
-    // 만약 아래 코드처럼 각각 의존성을 주입 해준다면 밑에 있는 코드 전체를 고쳐야 한다.
-     private final CardAdapter cardAdapter = new CardAdapter();
-     private final DiscountInterface dicountInterface = new DicountByPayMethod();
+    private  final Map<PayMethodType, PaymentInterface> paymentInterfaceMap =
+            new HashMap<>();
+     private final DiscountInterface discountInterface;
+
+    public ConveniencePayService(Set<PaymentInterface> paymentInterfaceSet,
+                                 DiscountInterface discountInterface) {
+        paymentInterfaceSet.forEach(
+                paymentInterface -> paymentInterfaceMap.put(
+                        paymentInterface.getPayMethodType(),
+                        paymentInterface
+                )
+        );
+
+        this.discountInterface = discountInterface;
+
+    }
+
     public PayResponse pay(PayRequest payRequest) {
-        PaymentInterface paymentInterface;
+        PaymentInterface paymentInterface =
+                paymentInterfaceMap.get(payRequest.getPayMethodType());
 
-        if(payRequest.getPayMathodType() == PayMethodType.CARD) {
-            paymentInterface = cardAdapter;
-        } else {
-            paymentInterface = moneyAdapter;
-        }
-
-        Integer discountAmount = dicountInterface.getDiscountedAmount(payRequest);
+        Integer discountAmount = discountInterface.getDiscountedAmount(payRequest);
         PaymentResult payment = paymentInterface.payment(discountAmount);
-
 
         // 실패와 성공 케이스를 if else 문으로 처리 하는 것은 삼가하고
         // fail fast
@@ -44,14 +55,11 @@ public class ConveniencePayService { // 편걸이
     }
 
     public PayCancelReponse payCancel(PayCancelRequest payCancelRequest) {
-        PaymentInterface paymentInterface;
+        PaymentInterface paymentInterface =
+                paymentInterfaceMap.get(payCancelRequest.getPayMethodType());
 
-        if(payCancelRequest.getPayMethodType() == PayMethodType.CARD) {
-            paymentInterface = cardAdapter;
-        } else {
-            paymentInterface = moneyAdapter;
-        }
-        CancelPaymentResult cancelPaymentResult = paymentInterface.CancelPayment(payCancelRequest.getPayCancelAmount());
+        CancelPaymentResult cancelPaymentResult =
+                paymentInterface.CancelPayment(payCancelRequest.getPayCancelAmount());
 
         if(cancelPaymentResult == CancelPaymentResult.CANCEL_PAYMENT_FAIL) {
             return new PayCancelReponse(PayCancelResult.PAY_CANCEL_FAIL, 0);
