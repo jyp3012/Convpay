@@ -7,6 +7,7 @@ public class ConveniencePayService { // 편걸이
     private final MoneyAdapter moneyAdapter = new MoneyAdapter();
     // 만약 아래 코드처럼 각각 의존성을 주입 해준다면 밑에 있는 코드 전체를 고쳐야 한다.
      private final CardAdapter cardAdapter = new CardAdapter();
+     private final DiscountInterface dicountInterface = new DicountByPayMethod();
     public PayResponse pay(PayRequest payRequest) {
         PaymentInterface paymentInterface;
 
@@ -16,7 +17,8 @@ public class ConveniencePayService { // 편걸이
             paymentInterface = moneyAdapter;
         }
 
-        PaymentResult payment = paymentInterface.payment(payRequest.getPayAmount());
+        Integer discountAmount = dicountInterface.getDiscountedAmount(payRequest);
+        PaymentResult payment = paymentInterface.payment(discountAmount);
 
 
         // 실패와 성공 케이스를 if else 문으로 처리 하는 것은 삼가하고
@@ -37,7 +39,7 @@ public class ConveniencePayService { // 편걸이
         }
 
         // Success Case
-        return new PayResponse(PayResult.SUCCESS, 100);
+        return new PayResponse(PayResult.SUCCESS, discountAmount);
 
     }
 
