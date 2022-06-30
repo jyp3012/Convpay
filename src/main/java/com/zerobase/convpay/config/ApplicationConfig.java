@@ -10,7 +10,7 @@ import java.util.HashSet;
 @Configuration
 public class ApplicationConfig {
     @Bean
-    public ConveniencePayService conveniencePayServiceDiscountConvenience() {
+    public ConveniencePayService conveniencePayService() {
         return new ConveniencePayService(
                 new HashSet<>(
                         Arrays.asList(MoneyAdapter(), CardAdapter())

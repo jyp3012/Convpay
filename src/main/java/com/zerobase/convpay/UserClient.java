@@ -14,7 +14,8 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class UserClient {
     public static void main(String[] args) {
         // '사용자' -> 편결이 -> 머니
-        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(ApplicationConfig.class);
+        ApplicationContext applicationContext =
+                new AnnotationConfigApplicationContext(ApplicationConfig.class);
 
         ConveniencePayService conveniencePayService = applicationContext.getBean("conveniencePayService",
                 ConveniencePayService.class);
